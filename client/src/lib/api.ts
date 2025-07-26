@@ -7,7 +7,7 @@ const getAccessToken = () => {
   return null;
 };
 
-export const api = async <T = any>(
+export const api = async <T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> => {

@@ -160,13 +160,17 @@ export default function UploadPage() {
           router.push("/dashboard");
         }, 2000);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Upload failed:", error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Upload failed";
+
       setSelectedFiles((prev) =>
         prev.map((f) => ({
           ...f,
           status: "error" as const,
-          error: error.message || "Upload failed",
+          error: errorMessage,
         }))
       );
     } finally {
