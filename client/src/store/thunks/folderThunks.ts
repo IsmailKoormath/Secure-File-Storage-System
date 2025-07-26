@@ -18,8 +18,11 @@ export const fetchFolders = createAsyncThunk<
       : "";
     const data = await api(`/folders${queryParams}`);
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to fetch folders");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue( "Failed to fetch folders");
   }
 });
 
@@ -37,8 +40,11 @@ export const createFolder = createAsyncThunk<
       body: JSON.stringify(folderData),
     });
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to create folder");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to create folder");
   }
 });
 
@@ -59,8 +65,11 @@ export const updateFolder = createAsyncThunk<
       body: JSON.stringify(updates),
     });
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to update folder");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue( "Failed to update folder");
   }
 });
 
@@ -75,7 +84,10 @@ export const deleteFolder = createAsyncThunk<
   try {
     await api(`/folders/${folderId}`, { method: "DELETE" });
     return folderId;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to delete folder");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue( "Failed to delete folder");
   }
 });

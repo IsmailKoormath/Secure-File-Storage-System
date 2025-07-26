@@ -10,11 +10,14 @@ export const registerUser = createAsyncThunk(
     try {
       const data = await api("/auth/register", {
         method: "POST",
-        body: JSON.stringify({name, email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
       return data;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      }
+      return rejectWithValue("An unknown error occurred.");
     }
   }
 );
@@ -31,8 +34,11 @@ export const loginUser = createAsyncThunk(
         body: JSON.stringify({ email, password }),
       });
       return data;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    }  catch (err: unknown) {
+  if (err instanceof Error) {
+    return rejectWithValue(err.message);
+  }
+  return rejectWithValue("An unknown error occurred.");
     }
   }
 );
@@ -45,7 +51,10 @@ export const refreshToken = createAsyncThunk(
         method: "GET",
       });
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      }
       return rejectWithValue("Session expired. Please login again.");
     }
   }
@@ -57,8 +66,11 @@ export const logoutUser = createAsyncThunk(
     try {
       await api("/auth/logout", { method: "POST" });
       return true;
-    } catch (err: any) {
-      return rejectWithValue("Failed to logout");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      }
+      return rejectWithValue("Failed to logout.");
     }
   }
 );

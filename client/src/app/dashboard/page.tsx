@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchFiles, deleteFile } from "@/store/thunks/fileThunks";
 import ConfirmModal from "@/components/ConfirmModal";
+import Image from "next/image";
+import { FileType } from "@/types";
 
 export default function DashboardPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -239,7 +241,7 @@ export default function DashboardPage() {
       {/* Files Grid */}
       {files.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {files.map((file: any) => (
+          {files.map((file: FileType) => (
             <div
               key={file._id}
               className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden group"
@@ -248,8 +250,10 @@ export default function DashboardPage() {
               <div className="aspect-video bg-gray-50 flex items-center justify-center relative overflow-hidden">
                 {file.url &&
                 file.filename.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                  <img
+                  <Image
                     src={file.url}
+                    width={200}
+                    height={150}
                     alt={file.filename}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
@@ -258,7 +262,6 @@ export default function DashboardPage() {
                     {getFileIcon(file.filename)}
                   </div>
                 )}
-
               </div>
 
               {/* File Info */}
@@ -281,7 +284,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between">
                     <span>Uploaded:</span>
                     <span>
-                      {new Date(file.uploadedAt).toLocaleDateString("en-GB", {
+                      {new Date(file.updatedAt).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",

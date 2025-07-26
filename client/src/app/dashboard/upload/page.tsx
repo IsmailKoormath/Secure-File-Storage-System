@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { uploadFiles } from "@/store/thunks/fileThunks";
+import { UploadErrorItem, UploadSuccessItem } from "@/types";
 
 interface FileWithProgress {
   file: File;
@@ -18,8 +19,8 @@ export default function UploadPage() {
   const [dragActive, setDragActive] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadResults, setUploadResults] = useState<{
-    success: any[];
-    errors: any[];
+    success: UploadSuccessItem[];
+    errors: UploadErrorItem[];
   } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -124,10 +125,11 @@ export default function UploadPage() {
       setSelectedFiles((prev) =>
         prev.map((fileItem) => {
           const wasUploaded = result.files?.some(
-            (uploaded: any) => uploaded.filename === fileItem.file.name
+            (uploaded: UploadSuccessItem) =>
+              uploaded.filename === fileItem.file.name
           );
           const hasError = result.errors?.some(
-            (error: any) => error.filename === fileItem.file.name
+            (error: UploadErrorItem) => error.filename === fileItem.file.name
           );
 
           return {
@@ -136,7 +138,7 @@ export default function UploadPage() {
             progress: 100,
             error: hasError
               ? result.errors?.find(
-                  (e: any) => e.filename === fileItem.file.name
+                  (e: UploadErrorItem) => e.filename === fileItem.file.name
                 )?.error
               : undefined,
           };
@@ -367,11 +369,13 @@ export default function UploadPage() {
                 ❌ Failed to upload {uploadResults.errors.length} files
               </h3>
               <div className="text-sm text-red-700 space-y-1">
-                {uploadResults.errors.map((error: any, index: number) => (
-                  <div key={index}>
-                    <strong>{error.filename}:</strong> {error.error}
-                  </div>
-                ))}
+                {uploadResults.errors.map(
+                  (error: UploadErrorItem, index: number) => (
+                    <div key={index}>
+                      <strong>{error.filename}:</strong> {error.error}
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}

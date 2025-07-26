@@ -2,9 +2,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/store/store";
 import { api } from "@/lib/api";
+import { FileType, UploadErrorItem } from "@/types";
 
 export const uploadFiles = createAsyncThunk<
-  { files: any[]; errors?: any[] },
+  { files: FileType[]; errors?: UploadErrorItem[] },
   File[],
   {
     state: RootState;
@@ -24,13 +25,16 @@ export const uploadFiles = createAsyncThunk<
     });
 
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to upload files");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to upload files");
   }
 });
 
 export const fetchFiles = createAsyncThunk<
-  any[],
+  FileType[],
   string | undefined,
   {
     state: RootState;
@@ -41,8 +45,11 @@ export const fetchFiles = createAsyncThunk<
     const queryParams = filter ? `?type=${encodeURIComponent(filter)}` : "";
     const data = await api(`/files${queryParams}`);
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to fetch files");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue( "Failed to fetch files");
   }
 });
 
@@ -57,7 +64,10 @@ export const deleteFile = createAsyncThunk<
   try {
     await api(`/files/${fileId}`, { method: "DELETE" });
     return fileId;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to delete file");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue( "Failed to delete file");
   }
 });

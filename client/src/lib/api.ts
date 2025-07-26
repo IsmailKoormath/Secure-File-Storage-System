@@ -7,15 +7,15 @@ const getAccessToken = () => {
   return null;
 };
 
-export const api = async (
+export const api = async <T = any>(
   url: string,
   options: RequestInit = {}
-): Promise<any> => {
+): Promise<T> => {
   const isFormData = options.body instanceof FormData;
   const token = getAccessToken();
 
   const res = await fetch(`${baseUrl}${url}`, {
-    credentials: "include", // needed for cookies (e.g., refreshToken)
+    credentials: "include",
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -29,5 +29,6 @@ export const api = async (
     throw new Error(errorData.message || "Something went wrong");
   }
 
-  return res.json();
+  return res.json() as Promise<T>;
 };
+

@@ -1,16 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchFiles, uploadFiles } from "../thunks/fileThunks";
+import { FileType, UploadErrorItem } from "@/types";
 
-export interface FileItem {
-  _id: string;
-  name: string;
-  url: string;
-  size: number;
-  uploadedAt: string;
-}
+
 
 interface FileState {
-  files: FileItem[];
+  files: FileType[];
   loading: boolean;
   error: string | null;
 }
@@ -40,7 +35,7 @@ const fileSlice = createSlice({
       })
       .addCase(
         fetchFiles.fulfilled,
-        (state, action: PayloadAction<FileItem[]>) => {
+        (state, action: PayloadAction<FileType[]>) => {
           state.loading = false;
           state.files = action.payload;
         }
@@ -59,7 +54,7 @@ const fileSlice = createSlice({
         uploadFiles.fulfilled,
         (
           state,
-          action: PayloadAction<{ files: FileItem[]; errors?: any[] }>
+          action: PayloadAction<{ files: FileType[]; errors?: UploadErrorItem[] }>
         ) => {
           state.loading = false;
           if (action.payload.files && action.payload.files.length > 0) {
