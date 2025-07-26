@@ -107,7 +107,7 @@ export default function LoginPage() {
             {/* Error Message */}
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
-                {error}
+                Email or password is incorrect.
               </div>
             )}
           </form>
