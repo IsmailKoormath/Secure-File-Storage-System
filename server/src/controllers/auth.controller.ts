@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .status(201)
-    .json({ accessToken });
+    .json({ accessToken, email: user.email });
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -46,8 +46,8 @@ export const login = async (req: Request, res: Response) => {
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
-    .json({ accessToken });
+    .json({ accessToken,email: user.email });
 };

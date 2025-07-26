@@ -19,7 +19,7 @@ export const uploadFileToS3 = async (
     ContentType: mimetype,
   });
 
-  await s3.send(command);
+  await s3.send(command);  
 
   return {
     key,

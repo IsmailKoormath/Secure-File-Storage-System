@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from "mongoose";
+import mongoose, { Schema, model, Document, Types } from "mongoose";
 
 export interface IFile extends Document {
   filename: string;
@@ -7,10 +7,11 @@ export interface IFile extends Document {
   mimetype: string;
   size: number;
   userId: Types.ObjectId;
+  folderId:Types.ObjectId;
   createdAt: Date;
 }
 
-const fileSchema = new Schema<IFile>(
+export const fileSchema = new Schema<IFile>(
   {
     filename: { type: String, required: true },
     key: { type: String, required: true },
@@ -18,6 +19,11 @@ const fileSchema = new Schema<IFile>(
     mimetype: { type: String, required: true },
     size: { type: Number, required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    folderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Folder",
+      default: null,
+    },
   },
   { timestamps: true }
 );
