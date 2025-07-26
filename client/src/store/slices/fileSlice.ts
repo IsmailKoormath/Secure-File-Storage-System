@@ -42,7 +42,7 @@ const fileSlice = createSlice({
       )
       .addCase(fetchFiles.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch files";
+        state.error = (action.payload as string) || "Failed to fetch files";
       })
 
       // Upload
@@ -54,7 +54,10 @@ const fileSlice = createSlice({
         uploadFiles.fulfilled,
         (
           state,
-          action: PayloadAction<{ files: FileType[]; errors?: UploadErrorItem[] }>
+          action: PayloadAction<{
+            files: FileType[];
+            errors?: UploadErrorItem[];
+          }>
         ) => {
           state.loading = false;
           if (action.payload.files && action.payload.files.length > 0) {
@@ -67,7 +70,7 @@ const fileSlice = createSlice({
       )
       .addCase(uploadFiles.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "File upload failed";
+        state.error = (action.payload as string) || "File upload failed";
       });
   },
 });

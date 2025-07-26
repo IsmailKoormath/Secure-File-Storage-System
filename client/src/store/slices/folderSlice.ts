@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FileItem } from "./fileSlice";
 import { createFolder, deleteFolder, fetchFolders, updateFolder } from "../thunks/folderThunks";
+import { FileType } from "@/types";
 export interface Folder {
     _id: string;
     name: string;
@@ -14,12 +14,12 @@ export interface Folder {
 
 
 const initialState = {
-  files: [] as FileItem[],
+  files: [] as FileType[],
   folders: [] as Folder[],
   currentFolderId: null as string | null,
   folderPath: [] as Folder[],
   folderLoading: false,
-  error: null as string | null
+  error: null as string | null,
 };
   
   const FolderSlice = createSlice({
@@ -43,7 +43,7 @@ const initialState = {
         })
         .addCase(fetchFolders.rejected, (state, action) => {
           state.folderLoading = false;
-          state.error = action.payload || "Failed to fetch folders";
+          state.error = (action.payload as string) || "Failed to fetch folders";
         })
 
         .addCase(createFolder.fulfilled, (state, action) => {
