@@ -9,13 +9,13 @@ import {
 interface User {
   email: string;
 }
-
 interface AuthState {
   user: User | null;
   token: string | null;
   loading: boolean;
   error: string | null;
 }
+
 
 const initialState: AuthState = {
   user: null,
@@ -40,10 +40,10 @@ const authSlice = createSlice({
         registerUser.fulfilled,
         (
           state,
-          action: PayloadAction<{ email: User; accessToken: string }>
+          action: PayloadAction<{ email: string; accessToken: string }>
         ) => {
           state.loading = false;
-          state.user = action.payload.email;
+          state.user = { email: action.payload.email };;
           state.token = action.payload.accessToken;
           localStorage.setItem("accessToken", action.payload.accessToken);
         }
@@ -60,9 +60,12 @@ const authSlice = createSlice({
       })
       .addCase(
         loginUser.fulfilled,
-        (state, action: PayloadAction<{ email: User; accessToken: string }>) => {
+        (
+          state,
+          action: PayloadAction<{ email: string; accessToken: string }>
+        ) => {
           state.loading = false;
-          state.user = action.payload.email;
+          state.user = { email: action.payload.email };;
           state.token = action.payload.accessToken;
           localStorage.setItem("accessToken", action.payload.accessToken);
         }
@@ -72,18 +75,13 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Refresh
       .addCase(
         refreshToken.fulfilled,
-        (state, action: PayloadAction<{ user: User; token: string }>) => {
+        (state, action: PayloadAction<{ user: { email: string }; token: string }>) => {
           state.user = action.payload.user;
           state.token = action.payload.token;
         }
       )
-      .addCase(refreshToken.rejected, (state) => {
-        state.user = null;
-        state.token = null;
-      })
 
       // Logout
       .addCase(logoutUser.fulfilled, (state) => {

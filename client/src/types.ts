@@ -30,3 +30,27 @@ export interface UploadErrorItem {
   error: string;
 }
   
+export interface RegisterResponse {
+  email: string;
+  accessToken: string;
+}
+
+export interface RegisterInput {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  email: string;
+  accessToken: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+export interface RefreshTokenResponse {
+  user: { email: string };
+  token: string;
+}
