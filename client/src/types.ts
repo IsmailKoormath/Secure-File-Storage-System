@@ -12,6 +12,16 @@ export interface FileType {
   __v: number;
 }
 
+export interface Folder {
+  _id: string;
+  name: string;
+  userId: string;
+  parentId: string | null;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface UploadSuccessItem {
   _id: string;
   filename: string;
@@ -25,6 +35,19 @@ export interface UploadSuccessItem {
   updatedAt: string;
 }
 
+export interface CreateFolderData {
+  name: string;
+  color?: string;
+  parentId?: string | null;
+}
+export interface UpdateFolderPayload {
+  folderId: string;
+  data: {
+    name?: string;
+    color?: string;
+    parentId?: string | null;
+  };
+}
 export interface UploadErrorItem {
   filename: string;
   error: string;

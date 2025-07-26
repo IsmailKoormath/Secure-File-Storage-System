@@ -1,15 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFolder, deleteFolder, fetchFolders, updateFolder } from "../thunks/folderThunks";
-import { FileType } from "@/types";
-export interface Folder {
-    _id: string;
-    name: string;
-    userId: string;
-    parentId: string | null;
-    color: string;
-    createdAt: string;
-    updatedAt: string;
-  }
+import { FileType, Folder } from "@/types";
+
 
 
 

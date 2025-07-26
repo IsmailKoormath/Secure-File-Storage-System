@@ -1,77 +1,91 @@
 import { api } from "@/lib/api";
 import { RootState } from "../store";
-import { Folder } from "../slices/folderSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { CreateFolderData, Folder, UpdateFolderPayload } from "@/types";
 
+
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+}
 
 export const fetchFolders = createAsyncThunk<
-  Folder[],
-  string | undefined, // parentId (optional)
-  {
-    state: RootState;
-    rejectValue: string;
-  }
->("folder/fetchFolders", async (parentId, { rejectWithValue }) => {
+  Folder[], 
+  void,
+  { rejectValue: string }
+>("folders/fetchFolders", async (_, { rejectWithValue }) => {
   try {
-    const queryParams = parentId
-      ? `?parentId=${encodeURIComponent(parentId)}`
-      : "";
-    const data = await api(`/folders${queryParams}`);
+    const res = await fetch("/api/folders");
+    if (!res.ok) {
+      const errorData = await res.json();
+      return rejectWithValue(errorData.message || "Failed to fetch folders");
+    }
+    const data: Folder[] = await res.json();
     return data;
   } catch (err: unknown) {
     if (err instanceof Error) {
       return rejectWithValue(err.message);
     }
-    return rejectWithValue( "Failed to fetch folders");
+    return rejectWithValue("Unknown error");
   }
 });
 
 export const createFolder = createAsyncThunk<
-  Folder,
-  { name: string; parentId?: string | null; color?: string },
-  {
-    state: RootState;
-    rejectValue: string;
-  }
->("folder/createFolder", async (folderData, { rejectWithValue }) => {
+  Folder, // Return newly created folder
+  CreateFolderData, 
+  { rejectValue: string }
+>("folders/createFolder", async (data, { rejectWithValue }) => {
   try {
-    const data = await api("/folders", {
+    const res = await fetch("/api/folders", {
       method: "POST",
-      body: JSON.stringify(folderData),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-    return data;
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      return rejectWithValue(errorData.message || "Failed to create folder");
+    }
+
+    const newFolder: Folder = await res.json();
+    return newFolder;
   } catch (err: unknown) {
     if (err instanceof Error) {
       return rejectWithValue(err.message);
     }
-    return rejectWithValue("Failed to create folder");
+    return rejectWithValue("Unknown error");
   }
 });
 
+
+
 export const updateFolder = createAsyncThunk<
-  Folder,
-  {
-    folderId: string;
-    updates: { name?: string; color?: string; parentId?: string | null };
-  },
-  {
-    state: RootState;
-    rejectValue: string;
-  }
->("folder/updateFolder", async ({ folderId, updates }, { rejectWithValue }) => {
+  Folder, 
+  UpdateFolderPayload, 
+  { rejectValue: string }
+>("folders/updateFolder", async ({ folderId, data }, { rejectWithValue }) => {
   try {
-    const data = await api(`/folders/${folderId}`, {
+    const res = await fetch(`/api/folders/${folderId}`, {
       method: "PUT",
-      body: JSON.stringify(updates),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-    return data;
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      return rejectWithValue(errorData.message || "Failed to update folder");
+    }
+
+    const updatedFolder: Folder = await res.json();
+    return updatedFolder;
   } catch (err: unknown) {
     if (err instanceof Error) {
       return rejectWithValue(err.message);
     }
-    return rejectWithValue( "Failed to update folder");
+    return rejectWithValue("Unknown error");
   }
 });
+
 
 export const deleteFolder = createAsyncThunk<
   string,

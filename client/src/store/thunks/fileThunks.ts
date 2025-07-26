@@ -7,35 +7,35 @@ import { FileType, UploadErrorItem } from "@/types";
 export const uploadFiles = createAsyncThunk<
   { files: FileType[]; errors?: UploadErrorItem[] },
   File[],
-  {
-    state: RootState;
-    rejectValue: string;
-  }
+  { state: RootState; rejectValue: string }
 >("file/uploadFiles", async (files, { rejectWithValue }) => {
   try {
     const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
 
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
+    const data = await api<{ files: FileType[]; errors?: UploadErrorItem[] }>(
+      "/files/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
-    const data = await api("/files/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    return data;
+    return {
+      files: data.files || [],
+      errors: data.errors || [],
+    };
   } catch (err: unknown) {
     if (err instanceof Error) {
       return rejectWithValue(err.message);
     }
-    return rejectWithValue("Failed to upload files");
+    return rejectWithValue("An unknown error occurred.");
   }
 });
 
 export const fetchFiles = createAsyncThunk<
-  FileType[],
-  string | undefined,
+  FileType[], 
+  string | undefined, 
   {
     state: RootState;
     rejectValue: string;
@@ -43,15 +43,16 @@ export const fetchFiles = createAsyncThunk<
 >("file/fetchFiles", async (filter, { rejectWithValue }) => {
   try {
     const queryParams = filter ? `?type=${encodeURIComponent(filter)}` : "";
-    const data = await api(`/files${queryParams}`);
+    const data = await api<FileType[]>(`/files${queryParams}`);
     return data;
   } catch (err: unknown) {
     if (err instanceof Error) {
       return rejectWithValue(err.message);
     }
-    return rejectWithValue( "Failed to fetch files");
+    return rejectWithValue("Failed to fetch files");
   }
 });
+
 
 export const deleteFile = createAsyncThunk<
   string,
