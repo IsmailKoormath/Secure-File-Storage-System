@@ -32,7 +32,7 @@ A full-stack application built with **Next.js**, **Express.js**, **MongoDB**, **
 git clone https://github.com/your-username/secure-file-storage-system.git
 cd secure-file-storage-system
 
-###2. Backend Setup
+### 2. Backend Setup
 ```bash
 cd backend
 npm install
@@ -69,29 +69,34 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 All routes are prefixed with /api
 
 🔐 Auth Routes
-```bash
-Method	Endpoint	       Description
-POST	  /auth/register	 Register user
-POST	  /auth/login	     Login user
-```
+
+| Method | Endpoint         | Description   |
+| ------ | ---------------- | ------------- |
+| POST   | `/auth/register` | Register user |
+| POST   | `/auth/login`    | Login user    |
+
+
 📁 Folder Routes (Protected)
-```bash
-Method	Endpoint	          Description
-GET	    /folders	          Get all folders
-POST	  /folders	          Create new folder
-PUT	    /folders/:folderId	Update folder
-DELETE	/folders/:folderId	Delete folder
-```
+
+| Method | Endpoint             | Description       |
+| ------ | -------------------- | ----------------- |
+| GET    | `/folders`           | Get all folders   |
+| POST   | `/folders`           | Create new folder |
+| PUT    | `/folders/:folderId` | Update folder     |
+| DELETE | `/folders/:folderId` | Delete folder     |
+
+
 📂 File Routes (Protected)
-```bash
-Method	Endpoint	          Description
-GET	     /files	            Get all files (optional ?type=image/pdf/...)
-POST	   /files/upload	    Upload multiple files (max 10)
-DELETE	 /files/:id	        Delete file by ID
-```
+
+| Method | Endpoint        | Description                           |
+| ------ | --------------- | ------------------------------------- |
+| GET    | `/files`        | Get all files (`?type=image/pdf/...`) |
+| POST   | `/files/upload` | Upload multiple files (max 10)        |
+| DELETE | `/files/:id`    | Delete file by ID                     |
+
 🔒 All file and folder routes require a valid JWT cookie.
-```bash
+
 📤 Deployment
-Frontend: Vercel
-Backend: Render
-```
+. Frontend: Vercel
+. Backend: Render
+
